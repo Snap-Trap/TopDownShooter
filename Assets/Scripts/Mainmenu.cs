@@ -9,6 +9,15 @@ public class Mainmenu : MonoBehaviour
     {
         SceneManager.LoadScene("SampleScene");
     }
+
+    public void Helpmenu()
+    {
+        SceneManager.LoadScene("HelpScene");
+    }
+    public void GOBACK()
+    {
+        SceneManager.LoadScene("Mainmenu");
+    }
     public void Quit()
     {
         Application.Quit();

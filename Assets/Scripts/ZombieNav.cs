@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
@@ -13,18 +14,11 @@ namespace Assets.Scripts
     public class ZombieNav : MonoBehaviour
     {
         public Transform player;
-        public float RayX = 0f;
-        public float RayY = 0f;
         public float moveSpeed = 6f;
 
         public bool canChase = false;
 
         private float RayDistance = 7.5f;
-        private float RayAngle = 360f;
-        private int raycount = 30;
-
-        private Ray sight;
-
 
         Animator anim;
         Rigidbody2D rb2d;
@@ -34,56 +28,52 @@ namespace Assets.Scripts
             rb2d = GetComponent<Rigidbody2D>();
             anim = GetComponent<Animator>();
         }
-        void Update()
-        {
-            //RaycastHit2D hit3 = Physics2D.Raycast(transform.position -new Vector3(0, 0), player.position, 7.5f);
-            //Debug.DrawRay(transform.position - new Vector3(RayX, RayY), player.position * 7.5f, Color.green);
+        //RaycastHit2D hit3 = Physics2D.Raycast(transform.position -new Vector3(0, 0), player.position, 7.5f);
+        //Debug.DrawRay(transform.position - new Vector3(RayX, RayY), player.position * 7.5f, Color.green);
 
-            //RaycastHit2D hit2 = Physics2D.Raycast(transform.position -new Vector3(-ERayX, -ERayY), Vector2.right, 7.5f);
-            //Debug.DrawRay(transform.position - new Vector3(-ERayX, ERayY), Vector2.right * 7.5f, Color.yellow);
-             
-            //Vector3 forward = transform.TransformDirection(Vector3.forward) * 10;
-            //Vector3 PlayerPos = player.position;
+        //RaycastHit2D hit2 = Physics2D.Raycast(transform.position -new Vector3(-ERayX, -ERayY), Vector2.right, 7.5f);
+        //Debug.DrawRay(transform.position - new Vector3(-ERayX, ERayY), Vector2.right * 7.5f, Color.yellow);
 
-            //RaycastHit2D hit = Physics2D.Raycast(transform.position, PlayerPos, 7.5f);
-            //Debug.DrawRay(transform.position, PlayerPos, Color.green);
+        //Vector3 forward = transform.TransformDirection(Vector3.forward) * 10;
+        //Vector3 PlayerPos = player.position;
 
-       
+        //RaycastHit2D hit = Physics2D.Raycast(transform.position, PlayerPos, 7.5f);
+        //Debug.DrawRay(transform.position, PlayerPos, Color.green);
+
+
 
         //.................................
 
-        void FixedUpdate()
+        void Update()
         {
-            sight.origin = new Vector3(transform.position.x, transform.position.y + 0.5f, transform.position.z);
-            sight.direction = transform.forward;
-            RaycastHit rayHit;
-            Vector3 forward = transform.TransformDirection(Vector3.forward);
+            Vector3 direction = player.position - transform.position;
+            Vector3 adjustedTransform = new Vector3(transform.position.x + 1.5f, transform.position.y);
+            Vector3 AntiadjustedTransform = new Vector3(transform.position.x - 1.5f, transform.position.y);
 
-            if (Physics.Raycast(sight, out rayHit, chaseRange))
+            // Cast a ray from the zombie's position towards the player
+            RaycastHit2D hit1 = Physics2D.Raycast(adjustedTransform, direction, RayDistance);
+            Debug.DrawRay(adjustedTransform, direction * 7.5f, Color.green);
+
+            // Github pls make it so that the hit collider works because the if statement doesn't work
+            // Fuck you Github
+
+            RaycastHit2D hit2 = Physics2D.Raycast(AntiadjustedTransform, direction, RayDistance);
+            Debug.DrawRay(AntiadjustedTransform, direction * 7.5f, Color.green);
+
+            if (hit1.collider != null)
             {
-                Debug.DrawLine(sight.origin, rayHit.point, Color.red);
-                if (rayHit.collider.tag == "Player")
+                Debug.Log("Hit something");
+                if (hit1.collider.CompareTag("Player") || hit2.collider.CompareTag("Player"))
                 {
-                    CurrentState = EnemyStates.following;
+                    Debug.Log("Player is in sight");
+                    canChase = true;
                 }
-
-                if (rayHit.collider.tag != "Player" && rayHit.collider.tag != "Enemy")
+                else
                 {
-                    CurrentState = EnemyStates.idle;
+                    canChase = false;
                 }
             }
-        }
 
-            if (rayHit.collider != null && hit.collider.CompareTag("Player"))
-            {
-                Debug.Log(hit.collider.gameObject + " hit 1");
-                canChase = true;
-            }
-            else
-            {
-                canChase = false;
-            }
-            
             if (canChase)
             {
                 ChasePlayer();
@@ -92,38 +82,23 @@ namespace Assets.Scripts
             {
                 StopChasingPlayer();
             }
-        }
 
 
-
-        void ChasePlayer() // Makes the enemy chase the player
-        {
-            // Means enemy is to the left of the player so they go right
-            // Because the player has the bigger X value, means it's further to the right
-            if (transform.position.x < player.position.x)
+            void ChasePlayer() // Makes the enemy chase the player
             {
-                rb2d.velocity = new Vector2(moveSpeed, 0);
-                // transform.localScale = new Vector2(2, 2);
-            }
-            else // for when enemy is to the right of the player so they go left
-            {
-                rb2d.velocity = new Vector2(-moveSpeed, 0);
-                // transform.localScale = new Vector2(-1, 1);
+                if (player != null)
+                {
+                    // Calculate direction from zombie to player
+                    Vector3 direction = player.position - transform.position;
+                    direction.Normalize();
+                    transform.Translate(direction * moveSpeed * Time.deltaTime);
+                }
             }
 
-            if (transform.position.y < player.position.y)
+            void StopChasingPlayer() // Makes the enemy stop chasing the player
             {
-                rb2d.velocity = new Vector2(0, moveSpeed);
+                rb2d.velocity = Vector2.zero;
             }
-            else
-            {
-                rb2d.velocity = new Vector2(0, -moveSpeed);
-            }
-        }
-
-        void StopChasingPlayer() // Makes the enemy stop chasing the player
-        {
-            rb2d.velocity = new Vector2(0, 0);
         }
     }
 }

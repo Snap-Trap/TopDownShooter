@@ -15,6 +15,7 @@ public class Shooting : MonoBehaviour
     public Transform Bulletpoint;
     public float BulletSpeed;
     
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -58,12 +59,12 @@ public class Shooting : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            Destroy(Bullet);
+          //  Destroy(tempBullet);
         }
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Destroy(Bullet);
+           // Destroy(tempBullet);
         }
     }
 }

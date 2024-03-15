@@ -60,7 +60,9 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PAuseMenuScript.cs" />
     <Compile Include="Assets\Scripts\Movement.cs" />
+    <Compile Include="Assets\Scripts\healthmanager.cs" />
     <Compile Include="Assets\Scripts\Mainmenu.cs" />
+    <Compile Include="Assets\Scripts\Playerhealth.cs" />
     <Compile Include="Assets\Scripts\Shooting.cs" />
     <Compile Include="Assets\Scripts\ZombieNav.cs" />
   </ItemGroup>

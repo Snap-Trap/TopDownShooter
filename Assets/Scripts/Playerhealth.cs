@@ -1,21 +1,54 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Playerhealth : MonoBehaviour
 {
     public float maxHealth = 10f;
-    public float currentHealth = 10f;
-    // Start is called before the first frame update
+    private float currentHealth;
+    private int enemyKillCount = 0; // Variabele om het aantal gedode vijanden bij te houden
+    private scoremanagerScript scoreManager; // Referentie naar het scoremanagerScript
+
     void Start()
     {
         currentHealth = maxHealth;
+        // Zoek en wijs de scoreManager toe
+        scoreManager = FindObjectOfType<scoremanagerScript>();
+        if (scoreManager == null)
+        {
+            Debug.LogError("ScoremanagerScript not found!");
+        }
     }
 
     public void TakeDamage(float damage)
     {
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+
+        if (currentHealth <= 0)
+        {
+            EndGame();
+        }
+    }
+
+    void EndGame()
+    {
+        // Sla het aantal gedode vijanden en het aantal behaalde punten op in PlayerPrefs
+        PlayerPrefs.SetInt("EnemyKillCount", enemyKillCount);
+        PlayerPrefs.SetInt("Score", scoreManager.GetScore());
+        PlayerPrefs.Save(); // Belangrijk om PlayerPrefs op te slaan
+        SceneManager.LoadScene("EndScreen");
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            TakeDamage(10); // Speler krijgt 1 HP schade als deze een vijand raakt
+            enemyKillCount++; // Verhoog het aantal gedode vijanden
+            scoreManager.AddScore(10); // Voeg 10 punten toe bij elke vijand die wordt gedood
+        }
     }
 
     public float GetCurrentHealth()

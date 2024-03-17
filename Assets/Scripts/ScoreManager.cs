@@ -22,6 +22,11 @@ public class scoremanagerScript : MonoBehaviour
         scoreText.text = "Score: " + score.ToString();
     }
 
+    public int GetScore()
+    {
+        return score;
+    }
+
     void Start()
     {
         // Zoek en wijs het TMP Text-component toe aan scoreText

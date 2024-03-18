@@ -45,9 +45,10 @@ public class Playerhealth : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            TakeDamage(10); // Speler krijgt 1 HP schade als deze een vijand raakt
+            // Als de speler een vijand raakt, voeg dan punten toe en verhoog het aantal gedode vijanden
+            scoreManager.AddScore(10); // Voeg punten toe bij het raken van een vijand
             enemyKillCount++; // Verhoog het aantal gedode vijanden
-            scoreManager.AddScore(10); // Voeg 10 punten toe bij elke vijand die wordt gedood
+            TakeDamage(10); // Speler krijgt 1 HP schade als deze een vijand raakt
         }
     }
 

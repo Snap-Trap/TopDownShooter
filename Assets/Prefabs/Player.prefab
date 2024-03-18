@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: -2135486012367611466}
   - component: {fileID: 9159095991885998881}
   - component: {fileID: -8463770824722998433}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Player
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -98,6 +98,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b79b2411811a6e147bf075b046f2fea6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  aimDirection: {x: 0, y: 0}
+  Bullet: {fileID: 0}
+  Bulletpoint: {fileID: 0}
+  BulletSpeed: 0
 --- !u!50 &-8463770824722998433
 Rigidbody2D:
   serializedVersion: 4

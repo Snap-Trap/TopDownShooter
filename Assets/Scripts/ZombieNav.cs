@@ -19,6 +19,7 @@ namespace Assets.Scripts
         public bool canChase = false;
 
         private float RayDistance = 7.5f;
+        private GameObject spriteRenderer;
 
         Animator anim;
         Rigidbody2D rb2d;
@@ -27,6 +28,7 @@ namespace Assets.Scripts
         {
             rb2d = GetComponent<Rigidbody2D>();
             anim = GetComponent<Animator>();
+            spriteRenderer = GameObject.FindWithTag("Rotpoint");
         }
         //RaycastHit2D hit3 = Physics2D.Raycast(transform.position -new Vector3(0, 0), player.position, 7.5f);
         //Debug.DrawRay(transform.position - new Vector3(RayX, RayY), player.position * 7.5f, Color.green);
@@ -43,46 +45,78 @@ namespace Assets.Scripts
 
 
         //.................................
-
+        public float ConeOfVision = 45;
+        public int RaysToShoot = 10;
         void Update()
         {
             Vector3 direction = player.position - transform.position;
-            Vector3 adjustedTransform = new Vector3(transform.position.x + 1.5f, transform.position.y);
-            Vector3 AntiadjustedTransform = new Vector3(transform.position.x - 1.5f, transform.position.y);
 
-            // Cast a ray from the zombie's position towards the player
-            RaycastHit2D hit1 = Physics2D.Raycast(adjustedTransform, direction, RayDistance);
-            Debug.DrawRay(adjustedTransform, direction * 7.5f, Color.green);
+            var angle = MathF.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
 
-            // Github pls make it so that the hit collider works because the if statement doesn't work
-            // Fuck you Github
+            var currentAngle = spriteRenderer.transform.rotation.eulerAngles.z;
+            
+                var directionWithAngle1 = Quaternion.Euler(new Vector3(0, 0, -ConeOfVision + currentAngle - 90)) * Vector3.up;
+                Debug.DrawRay(transform.position, directionWithAngle1 * RayDistance, Color.red);
+                var directionWithAngle2 = Quaternion.Euler(new Vector3(0, 0, ConeOfVision + currentAngle - 90)) * Vector3.up;
+                Debug.DrawRay(transform.position, directionWithAngle2 * RayDistance, Color.red);
 
-            RaycastHit2D hit2 = Physics2D.Raycast(AntiadjustedTransform, direction, RayDistance);
-            Debug.DrawRay(AntiadjustedTransform, direction * 7.5f, Color.green);
-
-            if (hit1.collider != null)
-            {
-                Debug.Log("Hit something");
-                if (hit1.collider.CompareTag("Player") || hit2.collider.CompareTag("Player"))
+                var z1 = -ConeOfVision + currentAngle - 90; // These are the bounds of the cone of vision
+                var z2 = ConeOfVision + currentAngle - 90;
+            bool hitAny = false;
+            bool hitWall = false;
+            
+                for (int i = 0; i < RaysToShoot; i++)
                 {
-                    Debug.Log("Player is in sight");
-                    canChase = true;
+                    var z = Mathf.Lerp(z1, z2, (float)i / (RaysToShoot - 1));
+                    var directionWithAngle = Quaternion.Euler(new Vector3(0, 0, z)) * Vector3.up;
+                    Debug.DrawRay(transform.position, directionWithAngle * RayDistance, Color.red);
+
+                    if (Physics2D.Raycast(transform.position, directionWithAngle, RayDistance,
+                            LayerMask.GetMask("Player")))
+                    {
+                        hitAny = true;
+                        canChase = true;
+
+                        var dist = Vector3.Distance(transform.position, player.position);
+                        Debug.Log(dist);
+
+                        var wallhit = Physics2D.Raycast(transform.position, directionWithAngle, dist,
+                            LayerMask.GetMask("Obstacles"));
+
+                        if (wallhit)
+                        {
+                            hitWall = true;
+                            canChase = false;
+                        }
+
+                        break;
+                    }
                 }
-                else
+
+                if (!hitAny)
                 {
-                    canChase = false;
+                                        canChase = false;
+                
                 }
-            }
 
             if (canChase)
             {
                 ChasePlayer();
+                RotateTowardsPlayer(direction);
             }
             else
             {
                 StopChasingPlayer();
+
             }
 
+            void RotateTowardsPlayer(Vector3 direction)
+            {
+                var angle = MathF.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
+                angle -= 90;
+
+                spriteRenderer.transform.rotation = Quaternion.Euler(new Vector3(0, 0, -angle));
+            }
 
             void ChasePlayer() // Makes the enemy chase the player
             {

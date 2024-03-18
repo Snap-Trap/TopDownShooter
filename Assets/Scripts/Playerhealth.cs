@@ -45,15 +45,39 @@ public class Playerhealth : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Als de speler een vijand raakt, voeg dan punten toe en verhoog het aantal gedode vijanden
-            scoreManager.AddScore(10); // Voeg punten toe bij het raken van een vijand
+            Destroy(collision.gameObject);
             enemyKillCount++; // Verhoog het aantal gedode vijanden
-            TakeDamage(10); // Speler krijgt 1 HP schade als deze een vijand raakt
+            TakeDamage(1); // Speler krijgt 1 HP schade als deze een vijand raakt
         }
     }
 
     public float GetCurrentHealth()
     {
         return currentHealth;
+    }
+    void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            // Wanneer de speler op "E" drukt, roep de functie voor het gebruiken van de medkit aan
+            UseMedkit();
+        }
+    }
+
+    void UseMedkit()
+    {
+        // Controleer of de speler al volledige gezondheid heeft
+        if (currentHealth < maxHealth)
+        {
+            // Als de speler niet volledig gezond is, verhoog de gezondheid en vernietig de medkit
+            currentHealth += 1f; // Stel de hoeveelheid gezondheid die de medkit toevoegt in
+            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
+            Debug.Log("Health restored!");
+            // Hier moet je de logica toevoegen om de medkit te vernietigen
+        }
+        else
+        {
+            Debug.Log("Health is already full!");
+        }
     }
 }

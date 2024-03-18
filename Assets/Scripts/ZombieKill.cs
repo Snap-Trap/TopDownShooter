@@ -13,7 +13,7 @@ public class ZombieKill : MonoBehaviour
             if (scoreManager != null)
             {
                 // Roep de AddScore-methode aan om punten toe te voegen
-                scoreManager.AddScore(1); // Voeg hier het aantal punten toe dat je wilt toekennen voor het neerschieten van een vijand
+                scoreManager.AddScore(10); // Voeg hier het aantal punten toe dat je wilt toekennen voor het neerschieten van een vijand
             }
             // Voeg hier eventueel andere gedragingen toe die moeten plaatsvinden wanneer een zombie wordt neergeschoten
             Destroy(gameObject); // Vernietig de zombie

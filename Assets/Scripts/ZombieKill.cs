@@ -2,22 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
+
 public class ZombieKill : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D other)
+    private scoremanagerScript scoreManager; // Referentie naar ScoreManager
+
+    void Start()
     {
-        if (other.CompareTag("Bullet"))
+        // Zoek de ScoreManager in de scène
+        scoreManager = FindObjectOfType<scoremanagerScript>();
+        if (scoreManager == null)
         {
-            // Zoek de ScoreManager in de scène
-            scoremanagerScript scoreManager = FindObjectOfType<scoremanagerScript>();
+            Debug.LogError("ScoreManager not found!");
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Bullet"))
+        {
+            // Vernietig de vijand
+            Destroy(this.gameObject);
+
+            // Vernietig de kogel
+            Destroy(other.gameObject);
+
+            // Verhoog de score
             if (scoreManager != null)
             {
-                // Roep de AddScore-methode aan om punten toe te voegen
-                scoreManager.AddScore(10); // Voeg hier het aantal punten toe dat je wilt toekennen voor het neerschieten van een vijand
+                scoreManager.AddScore(10); // Voeg 10 punten toe voor het neerschieten van een vijand
             }
-            // Voeg hier eventueel andere gedragingen toe die moeten plaatsvinden wanneer een zombie wordt neergeschoten
-            Destroy(gameObject); // Vernietig de zombie
-            Destroy(other.gameObject); // Vernietig de kogel
         }
     }
 }

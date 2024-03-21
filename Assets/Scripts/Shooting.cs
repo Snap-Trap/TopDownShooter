@@ -23,13 +23,12 @@ public class Shooting : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        mainCamera = Camera.main;
         bulletRb = GetComponent<Rigidbody2D>();
     }
 
     void Update()
     {
-        mousePosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
+        mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         aimDirection = mousePosition - rb.position;
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         rb.rotation = angle;

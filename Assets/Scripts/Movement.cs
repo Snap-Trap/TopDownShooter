@@ -17,6 +17,7 @@ public class Movement : MonoBehaviour
 
         rb.velocity = new Vector2(AxisX, AxisY) * speed ;
         rb.velocity = new Vector2(AxisX, AxisY) * speed;
+
     }
 
 

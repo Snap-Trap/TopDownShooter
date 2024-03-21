@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Playerhealth.cs" />
     <Compile Include="Assets\Scripts\CameraScript.cs" />
     <Compile Include="Assets\Scripts\Shooting.cs" />
+    <Compile Include="Assets\Scripts\WeaponSwitching.cs" />
     <Compile Include="Assets\Scripts\ZombieNav.cs" />
   </ItemGroup>
   <ItemGroup>

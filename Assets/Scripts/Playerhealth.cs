@@ -8,7 +8,7 @@ public class Playerhealth : MonoBehaviour
     public float maxHealth = 10f;
     public float currentHealth;
     private int enemyKillCount = 0; // Variabele om het aantal gedode vijanden bij te houden
-    private scoremanagerScript scoreManager; // Referentie naar het scoremanagerScript
+    public scoremanagerScript scoreManager; // Referentie naar het scoremanagerScript
 
     void Start()
     {

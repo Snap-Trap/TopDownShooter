@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class Playerhealth : MonoBehaviour
 {
     public float maxHealth = 10f;
-    private float currentHealth;
+    public float currentHealth;
     private int enemyKillCount = 0; // Variabele om het aantal gedode vijanden bij te houden
     private scoremanagerScript scoreManager; // Referentie naar het scoremanagerScript
 
@@ -49,35 +49,15 @@ public class Playerhealth : MonoBehaviour
             enemyKillCount++; // Verhoog het aantal gedode vijanden
             TakeDamage(1); // Speler krijgt 1 HP schade als deze een vijand raakt
         }
+        else if (collision.gameObject.CompareTag("Medkit"))
+        {
+            // Roep de methode aan om de medkit te gebruiken
+            collision.gameObject.GetComponent<Destroymedkit>().UseMedkit();
+        }
     }
 
     public float GetCurrentHealth()
     {
         return currentHealth;
-    }
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.E))
-        {
-            // Wanneer de speler op "E" drukt, roep de functie voor het gebruiken van de medkit aan
-            UseMedkit();
-        }
-    }
-
-    void UseMedkit()
-    {
-        // Controleer of de speler al volledige gezondheid heeft
-        if (currentHealth < maxHealth)
-        {
-            // Als de speler niet volledig gezond is, verhoog de gezondheid en vernietig de medkit
-            currentHealth += 1f; // Stel de hoeveelheid gezondheid die de medkit toevoegt in
-            currentHealth = Mathf.Clamp(currentHealth, 0f, maxHealth);
-            Debug.Log("Health restored!");
-            // Hier moet je de logica toevoegen om de medkit te vernietigen
-        }
-        else
-        {
-            Debug.Log("Health is already full!");
-        }
     }
 }

@@ -4,54 +4,60 @@ using UnityEngine;
 
 public class WeaponSwitching : MonoBehaviour
 {
-    public GameObject[] weapons;
-    private int currentWeaponIndex = 0;
+    public Shooting shootingScript;
 
     void Start()
     {
-        // Schakel alle wapens uit behalve het eerste
-        for (int i = 1; i < weapons.Length; i++)
+        // Zet het schiet-script in de inspector
+        if (shootingScript == null)
         {
-            weapons[i].SetActive(false);
+            Debug.LogError("Geen schiet-script toegewezen aan WeaponSwitching!");
+            enabled = false; // Schakel het script uit als er geen schiet-script is toegewezen
+            return;
         }
+
+        // Stel het standaardwapen in op pistool
+        shootingScript.isPistol = true;
+        shootingScript.isShotgun = false;
+        shootingScript.isAssaultRifle = false;
     }
 
-    void FixedUpdate()
+    void Update()
     {
         // Wapens schakelen met toetsaanslagen
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            SwitchWeapon(0);
+            SetWeapon(true, false, false); // Pistool
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            SwitchWeapon(1);
+            SetWeapon(false, true, false); // Shotgun
         }
         else if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            SwitchWeapon(2);
+            SetWeapon(false, false, true); // Assault Rifle
         }
         // Voeg extra toetsen toe voor andere wapens indien nodig
+
+        // Pistool afvuren wanneer de muisknop wordt losgelaten
+        if (shootingScript.isPistol && Input.GetMouseButtonDown(0))
+        {
+            shootingScript.FirePistol();
+        }
+
+        // Shotgun afvuren wanneer de muisknop wordt losgelaten
+        if (shootingScript.isShotgun && Input.GetMouseButtonDown(0))
+        {
+            shootingScript.FireShotgun();
+        }
     }
 
-    public void SwitchWeapon(int newIndex)
+    void SetWeapon(bool pistol, bool shotgun, bool assaultRifle)
     {
-        // Controleer of de nieuwe index binnen de grenzen van de wapenarray valt
-        if (newIndex >= 0 && newIndex < weapons.Length && weapons[newIndex] != null)
-        {
-            // Schakel het huidige wapen uit
-            weapons[currentWeaponIndex].SetActive(false);
-
-            // Schakel het nieuwe wapen in
-            weapons[newIndex].SetActive(true);
-
-            // Update de huidige wapenindex
-            currentWeaponIndex = newIndex;
-        }
-        else
-        {
-            // Toon een debugbericht als de index buiten de arraygrenzen valt of als er geen wapen is voor de opgegeven index
-            Debug.LogError("Ongeldige wapenindex of wapen niet gevonden voor index: " + newIndex);
-        }
+        // Zet de wapenstatussen in het schiet-script
+        shootingScript.isPistol = pistol;
+        shootingScript.isShotgun = shotgun;
+        shootingScript.isAssaultRifle = assaultRifle;
     }
 }
+

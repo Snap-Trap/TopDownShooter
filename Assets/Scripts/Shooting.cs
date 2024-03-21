@@ -58,7 +58,7 @@ public class Shooting : MonoBehaviour
         }
     }
 
-    void FirePistol()
+   public void FirePistol()
     {
         GameObject tempBullet = Instantiate(Bullet, Bulletpoint.position, Quaternion.identity);
 
@@ -75,7 +75,7 @@ public class Shooting : MonoBehaviour
         }
     }
 
-    void FireAssaultRifle()
+    public void FireAssaultRifle()
     {
         GameObject tempBullet = Instantiate(Bullet, Bulletpoint.position, Quaternion.identity);
 
@@ -92,7 +92,7 @@ public class Shooting : MonoBehaviour
         }
     }
 
-    void FireShotgun()
+    public void FireShotgun()
     {
         int numPellets = 8;
         float spreadAngle = 70f;

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Shooting : MonoBehaviour
 {
+    public bool isPistol;
+    public bool isShotgun;
+    public bool isAssaultRifle;
+
     private Rigidbody2D rb;
     private Rigidbody2D bulletRb;
     private Vector2 mousePosition;
@@ -14,7 +18,7 @@ public class Shooting : MonoBehaviour
     public GameObject Bullet;
     public Transform Bulletpoint;
     public float BulletSpeed;
-    
+
 
     void Start()
     {
@@ -30,16 +34,33 @@ public class Shooting : MonoBehaviour
         float angle = Mathf.Atan2(aimDirection.y, aimDirection.x) * Mathf.Rad2Deg;
         rb.rotation = angle;
 
-        if (Input.GetMouseButtonDown(0))
+        if (isPistol)
         {
-           Fire();
+            if (Input.GetMouseButtonDown(0))
+            {
+                FirePistol();
+            }
+            
+        }
+        if (isShotgun)
+        {
+            if (Input.GetMouseButtonDown(0))
+            {
+                FireShotgun();
+            }
+        }
+
+        if (isAssaultRifle)
+        {
+            if (Input.GetMouseButton(0))
+            {
+                FireAssaultRifle();
+            }
         }
     }
-   void Fire()
-   {
-        // GameObject tempBullet = Instantiate(Bullet,new Vector2(transform.position.x + Random.Range(-0.1f, 0.1f), transform.position.y),
-        //Quaternion.identity);
 
+    void FirePistol()
+    {
         GameObject tempBullet = Instantiate(Bullet, Bulletpoint.position, Quaternion.identity);
 
 
@@ -55,16 +76,60 @@ public class Shooting : MonoBehaviour
         }
     }
 
+    void FireAssaultRifle()
+    {
+        GameObject tempBullet = Instantiate(Bullet, Bulletpoint.position, Quaternion.identity);
+
+
+        Rigidbody2D bulletRb = tempBullet.GetComponent<Rigidbody2D>();
+        if (bulletRb) // Check for Rigidbody2D presence
+        {
+            Vector2 forceDirection = aimDirection.normalized; // Normalize for consistent force
+            bulletRb.AddForce(forceDirection * 1750f);
+        }
+        else
+        {
+            Debug.LogError("Bullet prefab missing Rigidbody2D component!");
+        }
+    }
+
+    void FireShotgun()
+    {
+        int numPellets = 8;
+        float spreadAngle = 70f;
+
+        for (int i = 0; i < numPellets; i++)
+        {
+            // Calculate random direction within the spread angle
+            float randomAngleOffset = Random.Range(-spreadAngle / 2f, spreadAngle / 2f);
+            Vector2 direction = aimDirection.normalized;
+            direction = Quaternion.Euler(0, 0, randomAngleOffset) * direction;
+
+            // Instantiate and fire the bullet
+            GameObject tempBullet = Instantiate(Bullet, Bulletpoint.position, Quaternion.identity);
+            Rigidbody2D bulletRb = tempBullet.GetComponent<Rigidbody2D>();
+            if (bulletRb)
+            {
+                bulletRb.AddForce(direction * 2000f);
+            }
+            else
+            {
+                Debug.LogError("Bullet prefab missing Rigidbody2D component!");
+            }
+        }
+    }
+
     void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-          //  Destroy(tempBullet);
+            //  Destroy(tempBullet);
         }
 
         if (collision.gameObject.CompareTag("Enemy"))
         {
-           // Destroy(tempBullet);
+            // Destroy(tempBullet);
         }
     }
 }
+

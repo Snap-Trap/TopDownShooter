@@ -54,50 +54,44 @@ namespace Assets.Scripts
             var angle = MathF.Atan2(direction.x, direction.y) * Mathf.Rad2Deg;
 
             var currentAngle = spriteRenderer.transform.rotation.eulerAngles.z;
-            
-                var directionWithAngle1 = Quaternion.Euler(new Vector3(0, 0, -ConeOfVision + currentAngle - 90)) * Vector3.up;
-                Debug.DrawRay(transform.position, directionWithAngle1 * RayDistance, Color.red);
-                var directionWithAngle2 = Quaternion.Euler(new Vector3(0, 0, ConeOfVision + currentAngle - 90)) * Vector3.up;
-                Debug.DrawRay(transform.position, directionWithAngle2 * RayDistance, Color.red);
 
-                var z1 = -ConeOfVision + currentAngle - 90; // These are the bounds of the cone of vision
-                var z2 = ConeOfVision + currentAngle - 90;
-            bool hitAny = false;
-            bool hitWall = false;
-            
-                for (int i = 0; i < RaysToShoot; i++)
+            var directionWithAngle1 = Quaternion.Euler(new Vector3(0, 0, -ConeOfVision + currentAngle - 90)) * Vector3.up;
+            Debug.DrawRay(transform.position, directionWithAngle1 * RayDistance, Color.red);
+            var directionWithAngle2 = Quaternion.Euler(new Vector3(0, 0, ConeOfVision + currentAngle - 90)) * Vector3.up;
+            Debug.DrawRay(transform.position, directionWithAngle2 * RayDistance, Color.red);
+
+            var z1 = -ConeOfVision + currentAngle - 90; // These are the bounds of the cone of vision
+            var z2 = ConeOfVision + currentAngle - 90;
+
+            List<RaycastHit2D> hits = new List<RaycastHit2D>();
+
+            // The wall check
+            for (int i = 0; i < RaysToShoot; i++)
+            {
+                var z = Mathf.Lerp(z1, z2, i / (float)RaysToShoot);
+                var directionWithAngle = Quaternion.Euler(new Vector3(0, 0, z)) * Vector3.up;
+
+                var origin = transform.position;
+
+                hits.Add(Physics2D.Raycast(origin, directionWithAngle, RayDistance, LayerMask.GetMask("Obstacles")));
+                Debug.DrawRay(origin, directionWithAngle * RayDistance, Color.red);
+            }
+
+            for (int i = 0; i < hits.Count; i++)
+            {
+                if (hits[i].collider != null)
                 {
-                    var z = Mathf.Lerp(z1, z2, (float)i / (RaysToShoot - 1));
-                    var directionWithAngle = Quaternion.Euler(new Vector3(0, 0, z)) * Vector3.up;
-                    Debug.DrawRay(transform.position, directionWithAngle * RayDistance, Color.red);
-
-                    if (Physics2D.Raycast(transform.position, directionWithAngle, RayDistance,
-                            LayerMask.GetMask("Player")))
+                    if (hits[i].collider.CompareTag("Player"))
                     {
-                        hitAny = true;
                         canChase = true;
-
-                        var dist = Vector3.Distance(transform.position, player.position);
-                        Debug.Log(dist);
-
-                        var wallhit = Physics2D.Raycast(transform.position, directionWithAngle, dist,
-                            LayerMask.GetMask("Obstacles"));
-
-                        if (wallhit)
-                        {
-                            hitWall = true;
-                            canChase = false;
-                        }
-
                         break;
                     }
+                    else
+                    {
+                        canChase = false;
+                    }
                 }
-
-                if (!hitAny)
-                {
-                                        canChase = false;
-                
-                }
+            }
 
             if (canChase)
             {

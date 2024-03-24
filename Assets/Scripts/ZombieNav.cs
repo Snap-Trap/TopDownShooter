@@ -18,7 +18,7 @@ namespace Assets.Scripts
 
         public bool canChase = false;
 
-        private float RayDistance = 7.5f;
+        private float RayDistance = 12.5f;
         private GameObject spriteRenderer;
 
         Animator anim;

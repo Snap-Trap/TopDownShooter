@@ -60,6 +60,7 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\PAuseMenuScript.cs" />
     <Compile Include="Assets\Scripts\ZombieKill.cs" />
+    <Compile Include="Assets\Scripts\ZombieSpawner.cs" />
     <Compile Include="Assets\Scripts\Destroymedkit.cs" />
     <Compile Include="Assets\Scripts\Movement.cs" />
     <Compile Include="Assets\Scripts\ScoreManager.cs" />

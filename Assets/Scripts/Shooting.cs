@@ -122,7 +122,7 @@ public class Shooting : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Obstacle"))
         {
-            //  Destroy(tempBullet);
+            // Destroy(this.gameObject);
         }
 
         if (collision.gameObject.CompareTag("Enemy"))

@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 public class EnemyHealth : MonoBehaviour
 {
     private scoremanagerScript scoreManager; // Referentie naar ScoreManager
-    public int maxHealth = 5; // Maximale HP van de vijand
+    public int maxHealth = 10; // Maximale HP van de vijand
     private int currentHealth; // Huidige HP van de vijand
 
     void Start()
@@ -26,6 +26,10 @@ public class EnemyHealth : MonoBehaviour
 
         if (currentHealth <= 0)
         {
+            if (scoreManager != null)
+            {
+                scoreManager.AddScore(10); // Voeg 10 punten toe voor het neerschieten van een vijand
+            }
             Die(); // Als de HP van de vijand nul of minder is, roep de Die-methode aan
         }
     }
@@ -34,10 +38,6 @@ public class EnemyHealth : MonoBehaviour
     void Die()
     {
         Destroy(gameObject); // Vernietig de vijand GameObject wanneer deze sterft
-        if (scoreManager != null)
-        {
-            scoreManager.AddScore(10); // Voeg 10 punten toe voor het neerschieten van een vijand
-        }
     }
 }
 

@@ -22,9 +22,6 @@ public class ZombieKill : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Bullet"))
         {
-            // Vernietig de vijand
-            Destroy(this.gameObject);
-
             // Vernietig de kogel
             Destroy(other.gameObject);
 
@@ -35,5 +32,6 @@ public class ZombieKill : MonoBehaviour
             }
         }
     }
+
 }
 

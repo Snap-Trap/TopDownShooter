@@ -18,6 +18,7 @@ public class Shooting : MonoBehaviour
     public GameObject Bullet;
     public Transform Bulletpoint;
     public float BulletSpeed;
+    public int bulletDamage = 1;
 
 
     void Start()
@@ -39,7 +40,7 @@ public class Shooting : MonoBehaviour
             {
                 FirePistol();
             }
-            
+
         }
         if (isShotgun)
         {
@@ -58,7 +59,7 @@ public class Shooting : MonoBehaviour
         }
     }
 
-   public void FirePistol()
+    public void FirePistol()
     {
         GameObject tempBullet = Instantiate(Bullet, Bulletpoint.position, Quaternion.identity);
 
@@ -120,14 +121,17 @@ public class Shooting : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Obstacle"))
-        {
-            // Destroy(this.gameObject);
-        }
-
+        // Controleer of de kogel de vijand heeft geraakt
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            // Destroy(tempBullet);
+            // Haal het EnemyHealth-component op van de geraakte vijand
+            EnemyHealth enemyHealth = collision.gameObject.GetComponent<EnemyHealth>();
+
+            // Controleer of het EnemyHealth-component bestaat
+            if (enemyHealth != null)
+            {
+                enemyHealth.TakeDamage(bulletDamage); // Pas schade toe op de vijand
+            }
         }
     }
 }
